@@ -1,20 +1,16 @@
 let recorder;
+let chunks;
 
 function toggle(element) {
     if (element.innerHTML == 'Record') {
         element.style.backgroundColor = 'red';
-        element.innerHTML = 'Stop'
-        
+        element.innerHTML = 'Stop';
         
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-        const chunks = [];
+        chunks = [];
         recorder = new MediaRecorder(stream);
         recorder.ondataavailable = e => {
             chunks.push(e.data);
-            if (recorder.state == 'inactive') {
-                const blob = new Blob(chunks, { type: 'audio/wav' });
-                createAudioElement(URL.createObjectURL(blob));
-            }
         };
         recorder.start(0);
         }).catch(console.error);
@@ -23,6 +19,23 @@ function toggle(element) {
         element.style.backgroundColor = '#008CBA';
         element.innerHTML = 'Record'
         recorder.stop()
+        let file = new File(chunks, 'mysound.wav', {type: 'audio/wav'});
+        const formData = new FormData();
+        formData.append('file', file);
+        axios({
+            method: "post",
+            url: "http://127.0.0.1:5000/",
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data" },
+          })
+            .then(function (response) {
+                console.log(response);
+                const resultElement = document.getElementById('result');
+                resultElement.innerHTML = response.data.cfm.transcript
+            })
+            .catch(function (response) {
+              console.log(response);
+            });
     }
 }
 
