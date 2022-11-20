@@ -1,0 +1,17 @@
+flask
+torch
+hydra-core 
+pytorch-lightning 
+huggingface-hub 
+wget 
+onnx 
+braceexpand 
+webdataset 
+frozendict 
+unidecode 
+transformers 
+sentencepiece 
+youtokentome 
+pyannote.audio
+torch_stft
+sox
