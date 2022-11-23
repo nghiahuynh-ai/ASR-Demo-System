@@ -1,13 +1,13 @@
+from io import BytesIO
 from flask import Flask, render_template
 from flask_cors import CORS, cross_origin
 from flask import request
-import flask
 from pydub import AudioSegment
 import nemo.collections.asr as asr
 
 class Model:
     def __init__(self):
-        self.__model = asr.models.EncDecRNNTModel.restore_from('static\Alignment-Mask-Word.nemo')
+        self.__model = asr.models.EncDecRNNTModel.restore_from('static/VLSP-Baseline.nemo')
         
     def transcribe(self, audio_path):
         return self.__model.transcribe([audio_path])[0]
@@ -26,13 +26,17 @@ def index():
 
 @app.route('/', methods=['POST'])
 def get_data():
-    file = request.files['file']
+    f = request.files['audio_data'].read()
+    f = BytesIO(f)
+    audio = AudioSegment.from_file(f)
+    audio = audio.set_frame_rate(16000)
+    audio = audio.set_sample_width(2)
+    audio = audio.set_channels(1)
+    audio = audio.export('./dump/audio.wav', format='wav')
     
-    # transcript = model.transcribe('./dump/temp.wav')
-
-    response = flask.jsonify({'cfm': {'transcript': 'this is the transcript'}})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    transcript = model.transcribe('./dump/audio.wav')
+    return transcript[0]
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # http://127.0.0.1:5000
+    app.run(host='0.0.0.0', port=5000, debug=True)
