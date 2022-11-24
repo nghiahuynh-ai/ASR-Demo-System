@@ -1,5 +1,7 @@
 flask
+flask-cors
 torch
+numpy
 hydra-core 
 pytorch-lightning 
 huggingface-hub 
@@ -15,3 +17,7 @@ youtokentome
 pyannote.audio
 torch_stft
 sox
+inflect
+editdistance
+pydub
+IPython
