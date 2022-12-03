@@ -7,7 +7,7 @@ import nemo.collections.asr as asr
 
 class Model:
     def __init__(self):
-        self.__model = asr.models.EncDecRNNTModel.restore_from('static/VLSP-Baseline.nemo')
+        self.__model = asr.models.EncDecRNNTModel.restore_from('static/VLSP-Finetune-VLSP2020-v5.nemo')
         
     def transcribe(self, audio_path):
         return self.__model.transcribe([audio_path])[0]
